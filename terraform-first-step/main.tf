@@ -8,37 +8,16 @@ terraform {
 
 provider "docker" {}
 
-# 1. Define input variables (with default values)
-variable "container_name" {
-  description = "Name of the Nginx container"
-  type        = string
-  default     = "my-configurable-nginx"
+# Instantiate the Development Environment
+module "dev_webserver" {
+  source         = "./modules/nginx-server"
+  container_name = "nginx-env-dev"
+  external_port  = 7070
 }
 
-variable "external_port" {
-  description = "The external port mapped to the host"
-  type        = number
-  default     = 8080
-}
-
-# 2. Use those variables using the var. prefix
-resource "docker_image" "nginx_img" {
-  name         = "nginx:latest"
-  keep_locally = false
-}
-
-resource "docker_container" "nginx_container" {
-  image = docker_image.nginx_img.image_id
-  name  = var.container_name
-
-  ports {
-    internal = 80
-    external = var.external_port
-  }
-}
-
-# 3. Define outputs to display useful data automatically
-output "container_url" {
-  description = "The URL to access the web server"
-  value       = "http://localhost:${var.external_port}"
+# Instantiate the Production Environment
+module "prod_webserver" {
+  source         = "./modules/nginx-server"
+  container_name = "nginx-env-prod"
+  external_port  = 9090
 }
