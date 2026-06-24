@@ -1,15 +1,14 @@
-terraform {
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.27.0"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      # We removed the restricted v2.12 constraint to allow the latest stable engine
-    }
-  }
-}
+terraform { 
+  required_providers { 
+    kubernetes = { 
+      source  = "hashicorp/kubernetes" 
+      version = "~> 2.27.0" 
+    } 
+    helm = { 
+      source = "hashicorp/helm" 
+    } 
+  } 
+} 
 
 provider "kubernetes" {
   config_path    = "~/.kube/config"
@@ -17,7 +16,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path    = "~/.kube/config"
     config_context = "minikube"
   }
