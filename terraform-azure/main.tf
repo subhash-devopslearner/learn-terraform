@@ -143,3 +143,34 @@ output "vm_public_ip" {
   description = "The public IP address of your new live Azure VM"
   value       = azurerm_public_ip.public_ip.ip_address
 }
+
+# 9. Create a Native Azure Container Instance
+resource "azurerm_container_group" "aci_app" {
+  name                = "subhash-container-app"
+  location            = azurerm_resource_group.student_rg.location
+  resource_group_name = azurerm_resource_group.student_rg.name
+  ip_address_type     = "Public"
+  os_type             = "Linux"
+
+  container {
+    name   = "hello-cloud-app"
+    image  = "mcr.microsoft.com/azuredocs/aci-helloworld:latest" # A beautiful sample web application provided by Microsoft
+    cpu    = "0.5" # Lightweight resource limits
+    memory = "1.5"
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+  }
+
+  tags = {
+    Environment = "Learning-ACI"
+  }
+}
+
+# Output the URL link to access the standalone container directly
+output "container_app_public_ip" {
+  description = "The public IP address of your native Azure Container Instance"
+  value       = azurerm_container_group.aci_app.ip_address
+}
